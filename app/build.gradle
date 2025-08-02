@@ -1,0 +1,59 @@
+apply plugin: "com.android.library"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlinx-serialization'
+
+import com.android.build.OutputFile
+
+Properties props = new Properties()
+props.load(new FileInputStream("$project.rootDir/../version.properties"))
+props.each { prop ->
+    project.ext.set(prop.key, prop.value)
+}
+
+project.ext.set("versionName", "${project.ext.majorVersion}.${project.ext.minorVersion}.${project.ext.patchVersion}")
+project.ext.set("versionCode", project.ext.majorVersion as Integer * 1000 + project.ext.minorVersion as Integer * 100 + project.ext.patchVersion as Integer)
+
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode project.ext.get("versionCode")
+        versionName project.ext.get("versionName")
+        multiDexEnabled true
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets']
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
+    }
+
+    buildTypes {
+        debug {
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    dependencies {
+        implementation fileTree(dir: "libs", include: ["*.jar"])
+        implementation "androidx.core:core-ktx:1.9.0"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.1"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9"
+        implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    }
+}
