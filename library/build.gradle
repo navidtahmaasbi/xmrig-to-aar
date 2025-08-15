@@ -1,0 +1,56 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlinx-serialization'
+}
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        multiDexEnabled true
+        namespace 'com.xmrigforandroid'
+    }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    kotlinOptions {
+        jvmTarget = "21"
+    }
+
+    sourceSets {
+        main {
+            assets.srcDirs = ['src/main/assets']
+            jniLibs.srcDirs = ['src/main/jniLibs']
+            aidl.srcDirs = ['src/main/aidl']
+        }
+    }
+
+    buildTypes {
+        debug {
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources false
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+    buildFeatures {
+        aidl = true
+    }
+
+    dependencies {
+        implementation fileTree(dir: "libs", include: ["*.jar"])
+        implementation "androidx.core:core-ktx:1.16.0"
+        implementation "org.jetbrains.kotlin:kotlin-stdlib:2.0.21"
+        implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1"
+        implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2"
+        implementation "com.squareup.okhttp3:okhttp:4.9.0"
+        implementation 'androidx.work:work-runtime-ktx:2.10.3'
+
+    }
+}
